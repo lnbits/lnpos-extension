@@ -15,7 +15,6 @@ async def m001_initial(db):
             title TEXT NOT NULL,
             wallet TEXT NOT NULL,
             currency TEXT NOT NULL,
-            device TEXT NOT NULL,
             profit FLOAT NOT NULL,
             timestamp TIMESTAMP NOT NULL DEFAULT {db.timestamp_now}
         );
