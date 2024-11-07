@@ -11,21 +11,15 @@ db = Database("ext_lnpos")
 
 async def create_lnpos(data: CreateLnpos) -> Lnpos:
 
-    if data.device == "pos" or data.device == "atm":
-        lnpos_id = shortuuid.uuid()[:5]
-    else:
-        lnpos_id = urlsafe_short_hash()
-
+    lnpos_id = shortuuid.uuid()[:5]
     lnpos_key = urlsafe_short_hash()
-
     device = Lnpos(
         id=lnpos_id,
         key=lnpos_key,
         title=data.title,
         wallet=data.wallet,
-        profit=data.profit,
-        currency=data.currency,
-        device=data.device,
+        profit=data.profit or 0.0,
+        currency=data.currency or "sat",
     )
 
     await db.insert("lnpos.lnpos", device)
@@ -80,6 +74,7 @@ async def get_lnpos_payment(
     return await db.fetchone(
         "SELECT * FROM lnpos.lnpos_payment WHERE id = :id",
         {"id": lnpos_payment_id},
+        LnposPayment,
     )
 
 
@@ -104,6 +99,7 @@ async def get_lnpos_payment_by_payhash(
     return await db.fetchone(
         "SELECT * FROM lnpos.lnpos_payment WHERE payhash = :payhash",
         {"payhash": payhash},
+        LnposPayment,
     )
 
 
